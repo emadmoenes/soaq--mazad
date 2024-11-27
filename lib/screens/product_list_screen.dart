@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:http/http.dart' as http;
 import 'package:souq_mazad/screens/product_details_screen.dart';
 
@@ -16,7 +15,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   final int secondBatch = 10;
   final int thirdBatch = 6;
   int currentBatch = 0;
-  bool isFetchingPhase = false; // Indicator for fetching each phase
+  bool isFetchingPhase = false;
 
   final String baseUrl =
       'https://souq-mazad-task.vercel.app/e-commerce/app/products';
@@ -40,7 +39,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
         setState(() {
           allProducts.addAll(
               data.map((product) => product as Map<String, dynamic>).toList());
-          _loadNextBatch(); // Load the first batch
+          _loadNextBatch();
         });
       } else {
         throw Exception('Failed to load products');
@@ -56,23 +55,20 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
   void _loadNextBatch() {
     if (currentBatch == 0) {
-      // First batch: 10 items
       _addProducts(firstBatch);
     } else if (currentBatch == 1) {
-      // Second batch: 10 items
       _addProducts(secondBatch);
     } else if (currentBatch == 2) {
-      // Third batch: 6 items
       _addProducts(thirdBatch);
     }
   }
 
   Future<void> _addProducts(int count) async {
     setState(() {
-      isFetchingPhase = true; // Show loading indicator during phase fetch
+      isFetchingPhase = true;
     });
 
-    await Future.delayed(Duration(seconds: 1)); // Simulate API delay
+    await Future.delayed(Duration(seconds: 1));
 
     final int start = displayedProducts.length;
     final int end = start + count;
@@ -81,7 +77,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       displayedProducts.addAll(allProducts.sublist(
           start, end > allProducts.length ? allProducts.length : end));
       currentBatch++;
-      isFetchingPhase = false; // Hide loading indicator
+      isFetchingPhase = false;
     });
   }
 
@@ -98,7 +94,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   scrollNotification.metrics.maxScrollExtent &&
               displayedProducts.length < allProducts.length &&
               !isFetchingPhase) {
-            _loadNextBatch(); // Load the next batch of products
+            _loadNextBatch();
           }
           return false;
         },
